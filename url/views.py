@@ -3,7 +3,6 @@ from settings import *
 from url.url import URL
 from flask import Flask, flash
 from flask import Flask, render_template, redirect, abort, jsonify, request, send_from_directory
-import json
 
 # Memory
 url_obj     = URL()
@@ -85,7 +84,6 @@ def encode():
 
     if  url_obj.url_checker(url_check):
         if db.search(url, "Long"):
-            print("NO")
             return db.get_short(url)
         while 1:
             short_url = url_obj.random_generator(6)
@@ -115,13 +113,14 @@ def decode(key):
         @:return Decoded shorten url to real long url as json
     """
     
-    if db.is_exitst_short(key) == 0:
+    if not db.search("http://127.0.0.1:5000/"+key,"Short"):
         return resource_not_found("Not Found Given Encoded Url")
 
     data = {
         'Shorten': key,
-        'Long': db.search(key, "Short")
+        'Long': db.get_long("http://127.0.0.1:5000/"+key)
     }
 
     return jsonify(data)
 
+#http://127.0.0.1:5000/7cJ8mD

@@ -1,9 +1,5 @@
-from pickle import TRUE
-import queue
 import sqlite3
-from aem import Query
 from flask import jsonify
-import json
 from utils.utils import generate_json
 
 class Database:
