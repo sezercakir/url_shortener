@@ -3,10 +3,7 @@ from settings import *
 from url.url import URL
 from flask import Flask, flash
 from flask import Flask, render_template, redirect, abort, jsonify, request, send_from_directory
-
-# Memory
-url_obj     = URL()
-
+from app import url_obj
 
 # @brief Home Page
 @app.route('/')
