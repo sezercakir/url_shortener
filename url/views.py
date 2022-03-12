@@ -1,8 +1,9 @@
 from app import app, db
 from settings import *
 from url.url import URL
-from flask import Flask
+from flask import Flask, flash
 from flask import Flask, render_template, redirect, abort, jsonify, request, send_from_directory
+import json
 
 # Memory
 url_obj     = URL()
@@ -41,10 +42,11 @@ def static_from_root():
 @app.route('/get')
 def geturls():
     """
-        @brief Get Method for all json dict
+        @brief Get Method for all short and long urls as json
     """
-    #url_obj.json_dict
-    return jsonify(list(db.show_urls("All")))
+
+    datas = db.show_urls("All")
+    return datas
 
 
 @app.route("/<string:key>")
@@ -55,11 +57,14 @@ def redirect_url(key):
         @:return real long url page with redirect, if shorten
         url is not valid, returns error.
     """
-    if url_obj.short_url_dictionary[key]:
-        return redirect(url_obj.short_url_dictionary[key])
+    key = "http://127.0.0.1:5000/" + key
+
+    if db.search(key,"Short"):
+        return redirect(db.get_long(key))
     else:
         resource_not_found("There is not shorten link like that")
-
+    
+    return redirect("www.google.com")
 
 @app.route("/encode", methods=["POST", "GET"])
 def encode():
@@ -74,28 +79,23 @@ def encode():
     global short_url
     url         = request.form["url"]
     url_check   = None
+
     if ("http://" not in url) and ("https://" not in url) : url_check = "http://" + url 
     else: url_check = url
 
-    #not url in url_obj.short_url_dictionary.values()
     if  url_obj.url_checker(url_check):
-        if db.is_exitst_long(url) != -1:
-            return jsonify(list(db.show_urls("Long")))
+        if db.search(url, "Long"):
+            print("NO")
+            return db.get_short(url)
         while 1:
             short_url = url_obj.random_generator(6)
-            #url_obj.short_url_dictionary.keys():
-            if db.is_exitst_short(short_url) == -1:
-                break
+            if not db.search(short_url,"Short"):
+                if db.add_url("http://127.0.0.1:5000/" + short_url,url):
+                    break
     else:
-        resource_not_found("Long Url already exists. Renter")
+        resource_not_found("Unexpected Error. Renter")
 
-    db.add_url("http://127.0.0.1:5000/" + short_url,url)
-
-    url_obj.short_url_dictionary[short_url] = url
-    url_obj.json_dict["http://127.0.0.1:5000/" + short_url] = url
-
-    
-    return jsonify(list(url_obj.json_dict.keys())[-1])
+    return db.show_urls("All")
 
 
 @app.route("/decode")

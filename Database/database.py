@@ -1,7 +1,10 @@
+from pickle import TRUE
 import queue
 import sqlite3
 from aem import Query
 from flask import jsonify
+import json
+from utils.utils import generate_json
 
 class Database:
     def __init__(self,db_name):
@@ -20,52 +23,52 @@ class Database:
         con.row_factory = sqlite3.Row
         return con
 
-    def is_exitst_long(self,url):
+    def get_short(self, long):
         cur = self.__connect_database().cursor()
-        cur.execute("SELECT Short_Url FROM URLS WHERE Long_Url = ? ",
-                            (url,))
-        print(len(list(cur)))
-        return cur.rowcount
-    
-    def is_exitst_short(self,url):
+        cur.execute("SELECT Short_Url From URLS Where Long_Url = ?",(long,))
+        
+        return cur.fetchone()[0]
+
+    def get_long(self, short):
         cur = self.__connect_database().cursor()
-        cur.execute("SELECT Long_Url FROM URLS WHERE Short_Url = ? ", 
-                            (url,))
-        print(len(list(cur)))
-        return cur.rowcount
-    
+        cur = cur.execute("SELECT Long_Url From URLS Where Short_Url = ?",(short,))
+        
+        return cur.fetchone()[0]
+
     def search(self,url, key):
         cur = self.__connect_database().cursor()
         if key == "Long":
-            cur.execute("SELECT Short_Url FROM URLS WHERE Long_Url = ? ",
-                            (url,))
+            que = "SELECT * FROM URLS WHERE Long_Url = ?"
+            cur.execute(que, (url,))
         else:
-            cur.execute("SELECT Long_Url FROM URLS WHERE Short_Url = ? ",
-                            (url,))
+            que = "SELECT * FROM URLS WHERE Short_Url = ?"
+            cur.execute(que, (url,))
 
-        return cur.fetchall()
-
-
+        return True if cur.fetchone() else False
+        
     def add_url(self, url_short, url_long):
-        #try:
+        try:
             with sqlite3.connect("ulr_databse.db") as con:
                 cur = con.cursor()
                 cur.execute(
                     "Insert Into URLS Values(?, ?)",
                     (url_short,url_long,)
                 )
-                #return jsonify({'Success': True, 'msg': 'Url is added to DB'})
-        #except:
-            #return jsonify({'Success': False, 'msg': 'Url is already at DB'})
+                return 1
+        except:
+            return 0
 
     def show_urls(self,key):
 
         cur = self.__connect_database().cursor()
         if key == "Long":
-            cur.execute("SELECT Long_Url From URLS")
+            query = "SELECT Long_Url From URLS"
+            return generate_json(cur, query)
         elif key == "Short":
-            cur.execute("SELECT Short_Url From URLS")
+            query = "SELECT Short_Url From URLS"
+            return generate_json(cur, query)
         else:
-            cur.execute("SELECT * From URLS")
-        return cur.fetchall()
+            query = "SELECT * From URLS"
+            return generate_json(cur, query)
+
     
