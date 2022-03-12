@@ -1,3 +1,10 @@
+"""
+    @author:   Talha Sezer Çakır
+    @date:     12.03.2022
+    @detail:   Server side of project 
+"""
+
+
 from app import app, db
 from settings import *
 from url.url import URL
@@ -5,7 +12,6 @@ from flask import Flask, flash
 from flask import Flask, render_template, redirect, abort, jsonify, request, send_from_directory
 from app import url_obj
 
-# @brief Home Page
 @app.route('/')
 def home():
     """
@@ -51,8 +57,9 @@ def redirect_url(key):
         @brief It can be accessed long url using
                encoded short url.
         @:return real long url page with redirect, if shorten
-        url is not valid, returns error.
+                url is not valid, returns error.
     """
+
     key = "https://urlshortenerr.herokuapp.com/" + key
 
     if db.search(key,"Short"):
@@ -69,7 +76,7 @@ def encode():
                Same encoded short links are checked to avoid produce
                same short link for same urls. url is also checked wheter is valid or not.
 
-        @:return encoded shorten url
+        @:return all encoded shortened url
     """
 
     global short_url
@@ -107,7 +114,7 @@ def decode(key):
 
     """
         @brief   Decodes specific shorten url to real long url
-        @:return Decoded shorten url to real long url as json
+        @:return shortned part of short url and its original long url of it
     """
     
     if not db.search("https://urlshortenerr.herokuapp.com/"+key,"Short"):
@@ -120,4 +127,3 @@ def decode(key):
 
     return jsonify(data)
 
-#http://127.0.0.1:5000/7cJ8mD

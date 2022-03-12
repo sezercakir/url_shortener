@@ -1,3 +1,10 @@
+"""
+    @author:   Talha Sezer Çakır
+    @date:     12.03.2022
+    @detail:   Database side of project
+"""
+
+
 import sqlite3
 from flask import jsonify
 from utils.utils import generate_json

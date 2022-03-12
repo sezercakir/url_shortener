@@ -1,3 +1,10 @@
+"""
+    @author:   Talha Sezer Çakır
+    @date:     12.03.2022
+    @detail:   Utils funcs of project
+"""
+
+
 import json
 
 def generate_json(cur, query):

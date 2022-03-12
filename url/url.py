@@ -1,3 +1,10 @@
+"""
+    @author:   Talha Sezer Çakır
+    @date:     12.03.2022
+    @detail:   Url operations of project
+"""
+
+
 import random, string
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -24,6 +31,6 @@ class URL():
                 return True
             else:
                 return False
-        except HTTPError:
+        except:
             return False
     
