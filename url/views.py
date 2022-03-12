@@ -53,7 +53,7 @@ def redirect_url(key):
         @:return real long url page with redirect, if shorten
         url is not valid, returns error.
     """
-    key = "http://127.0.0.1:5000/" + key
+    key = "https://urlshortenerr.herokuapp.com/" + key
 
     if db.search(key,"Short"):
         return redirect(db.get_long(key))
@@ -85,7 +85,7 @@ def encode():
         while 1:
             short_url = url_obj.random_generator(6)
             if not db.search(short_url,"Short"):
-                if db.add_url("http://127.0.0.1:5000/" + short_url,url):
+                if db.add_url("https://urlshortenerr.herokuapp.com/" + short_url,url):
                     break
     else:
         resource_not_found("Unexpected Error. Renter")
@@ -110,12 +110,12 @@ def decode(key):
         @:return Decoded shorten url to real long url as json
     """
     
-    if not db.search("http://127.0.0.1:5000/"+key,"Short"):
+    if not db.search("https://urlshortenerr.herokuapp.com/"+key,"Short"):
         return resource_not_found("Not Found Given Encoded Url")
 
     data = {
         'Shorten': key,
-        'Long': db.get_long("http://127.0.0.1:5000/"+key)
+        'Long': db.get_long("https://urlshortenerr.herokuapp.com/"+key)
     }
 
     return jsonify(data)
