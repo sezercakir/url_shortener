@@ -8,7 +8,7 @@ Heroku deletes the data that the sqlite database holds every 24 hours as per the
 
 It can be accesible as Heroku App from [here](https://urlshortenerr.herokuapp.com/) or locally with cloning this repository.
 
-- Urls to be shortened are taken from hoem page.
+- Urls to be shortened are taken from home page.
 - /encode endpoint encodes the given url and saves it in the database and returns all encoded urls in short and long versions as json output
 - /decode&<shortened_part> endpoint decodes the shortend url and return long original url as json output
 - /decode endpoint returns all urls in the database as json output
